@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Top X Creators - 2026 Engagement Tracker</title>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chartjs-adapter-date-fns@3.0.0/dist/chartjs-adapter-date-fns.bundle.min.js"></script>
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { background: #0a0a0a; color: #e0e0e0; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; }
+.container { max-width: 1600px; margin: 0 auto; padding: 24px; }
+h1 { font-size: 28px; font-weight: 700; color: #fff; margin-bottom: 6px; }
+h2 { font-size: 20px; font-weight: 600; color: #fff; margin-bottom: 16px; }
+.subtitle { color: #888; font-size: 14px; margin-bottom: 24px; }
+.header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 32px; border-bottom: 1px solid #222; padding-bottom: 20px; }
+.header-stats { display: flex; gap: 32px; }
+.stat-box { text-align: center; }
+.stat-val { font-size: 28px; font-weight: 700; color: #00d4ff; }
+.stat-label { font-size: 12px; color: #888; text-transform: uppercase; letter-spacing: 1px; margin-top: 4px; }
+.card { background: #141414; border: 1px solid #222; border-radius: 12px; padding: 24px; margin-bottom: 24px; }
+.chart-container { position: relative; width: 100%; height: 400px; }
+.chart-container-sm { position: relative; width: 100%; height: 200px; }
+table { width: 100%; border-collapse: collapse; font-size: 13px; }
+th { text-align: left; padding: 10px 12px; background: #1a1a1a; color: #888; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; font-size: 11px; border-bottom: 1px solid #333; cursor: pointer; user-select: none; }
+th:hover { color: #00d4ff; }
+td { padding: 10px 12px; border-bottom: 1px solid #1a1a1a; }
+tr:hover td { background: #1a1a1a; }
+.rank { color: #555; font-weight: 700; }
+.creator-name a { text-decoration: none; font-weight: 600; }
+.sparkline-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 16px; }
+.spark-card { background: #141414; border: 1px solid #222; border-radius: 8px; padding: 16px; }
+.spark-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px; }
+.spark-name a { text-decoration: none; font-weight: 600; font-size: 14px; }
+.spark-total { color: #00d4ff; font-size: 18px; font-weight: 700; }
+.spark-stats { display: flex; gap: 16px; margin: 8px 0; font-size: 11px; color: #888; }
+.spark-stats span { display: flex; flex-direction: column; }
+.spark-stats .label { font-size: 9px; text-transform: uppercase; letter-spacing: 0.5px; color: #555; }
+.spark-stats .value { color: #ccc; font-weight: 600; }
+.heatmap-table { font-size: 11px; }
+.heatmap-table td { padding: 4px 6px; text-align: center; border: 1px solid #1a1a1a; min-width: 55px; }
+.heatmap-table th { padding: 4px 6px; font-size: 10px; }
+.heat-0 { background: #0d1117; color: #555; }
+.heat-1 { background: #0e4429; color: #7ee787; }
+.heat-2 { background: #006d32; color: #fff; }
+.heat-3 { background: #26a641; color: #fff; }
+.heat-4 { background: #39d353; color: #000; }
+.footer { text-align: center; padding: 32px 0 16px; color: #555; font-size: 12px; border-top: 1px solid #222; margin-top: 32px; }
+.footer a { color: #00d4ff; text-decoration: none; }
+.badge { display: inline-block; padding: 2px 8px; border-radius: 4px; font-size: 11px; font-weight: 600; }
+.cat-tech { background: rgba(59,130,246,0.15); color: #3b82f6; }
+.cat-sports { background: rgba(34,197,94,0.15); color: #22c55e; }
+.cat-entertainment { background: rgba(168,85,247,0.15); color: #a855f7; }
+.cat-news { background: rgba(245,158,11,0.15); color: #f59e0b; }
+.cat-politics { background: rgba(239,68,68,0.15); color: #ef4444; }
+.cat-science { background: rgba(6,182,212,0.15); color: #06b6d4; }
+.cat-finance { background: rgba(132,204,22,0.15); color: #84cc16; }
+.cat-brand { background: rgba(236,72,153,0.15); color: #ec4899; }
+.cat-geopolitics { background: rgba(249,115,22,0.15); color: #f97316; }
+@media (max-width: 900px) {
+    .header { flex-direction: column; gap: 16px; }
+    .header-stats { flex-wrap: wrap; }
+    .sparkline-grid { grid-template-columns: 1fr; }
+}
+</style>
+</head>
+<body>
+<div class="container">
+
+<div class="header">
+<div>
+<h1>Top X Creators - 2026 Engagement Tracker</h1>
+<p class="subtitle">Real engagement data from <a href="https://lunarcrush.com" target="_blank" style="color:#00d4ff;text-decoration:none;">LunarCrush</a> time series across 100 notable X/Twitter creators -- All of 2026 (Jan 1 - Apr 7)</p>
+</div>
+<div class="header-stats">
+<div class="stat-box"><div class="stat-val">201.6B</div><div class="stat-label">Total 2026 Engagements</div></div>
+<div class="stat-box"><div class="stat-val">100</div><div class="stat-label">Creators Tracked</div></div>
+<div class="stat-box"><div class="stat-val">14</div><div class="stat-label">Weeks of Data</div></div>
+
+</div>
+</div>
+
+<div class="card">
+<h2>Creator Rankings by 2026 Total Engagements</h2>
+<table id="rankTable">
+<thead><tr>
+<th onclick="sortTable(0,'num')">#</th>
+<th onclick="sortTable(1,'str')">Handle</th>
+<th onclick="sortTable(2,'str')">Category</th>
+<th onclick="sortTable(3,'num')">Followers</th>
+<th onclick="sortTable(4,'num')">2026 Total Engagements</th>
+
+<th onclick="sortTable(5,'num')">CreatorRank</th>
+</tr></thead>
+<tbody id="rankBody"></tbody>
+</table>
+</div>
+
+<div class="card">
+<h2>Weekly Engagements - Top 10 Creators</h2>
+<div class="chart-container"><canvas id="mainChart"></canvas></div>
+</div>
+
+<div class="card">
+<h2>Weekly Engagement Heatmap (Top 25)</h2>
+<div style="overflow-x:auto;"><table class="heatmap-table" id="heatmapTable"></table></div>
+</div>
+
+<div class="card">
+<h2>Individual Creator Engagement Trends</h2>
+<div class="sparkline-grid" id="sparkGrid"></div>
+</div>
+
+<div class="footer">
+<p>Powered by <a href="https://lunarcrush.com" target="_blank">LunarCrush</a> -- Real time series data as of April 7, 2026</p>
+</div>
+</div>
+
+<script>
+const CC = {"Tech": "#3b82f6", "Sports": "#22c55e", "Entertainment": "#a855f7", "News": "#f59e0b", "Politics": "#ef4444", "Science": "#06b6d4", "Finance": "#84cc16", "Brand": "#ec4899", "Geopolitics": "#f97316"};
+const CS = {"Tech": "cat-tech", "Sports": "cat-sports", "Entertainment": "cat-entertainment", "News": "cat-news", "Politics": "cat-politics", "Science": "cat-science", "Finance": "cat-finance", "Brand": "cat-brand", "Geopolitics": "cat-geopolitics"};
+const WL = ["2026-01-05", "2026-01-12", "2026-01-19", "2026-01-26", "2026-02-02", "2026-02-09", "2026-02-16", "2026-02-23", "2026-03-02", "2026-03-09", "2026-03-16", "2026-03-23", "2026-03-30", "2026-04-06"];
+const WN = ["W1", "W2", "W3", "W4", "W5", "W6", "W7", "W8", "W9", "W10", "W11", "W12", "W13", "W14"];
+
+const C = [{"h": "elonmusk", "cat": "Tech", "f": 237760971, "total": 54419221833, "avgW": 3887087273, "cr": 3, "w": [4250438948, 3584895808, 3107331101, 3147778886, 2296719270, 3429042929, 4506311663, 3762374388, 4108238747, 4634263112, 5580814301, 3566505551, 4086947707, 2142647347]}, {"h": "PopBase", "cat": "Entertainment", "f": 2918388, "total": 7725732474, "avgW": 551838033, "cr": 36, "w": [427989931, 358189180, 478782248, 564546596, 633649733, 418052766, 414864465, 383487952, 580691518, 585297634, 962351254, 695993874, 600731174, 369907856]}, {"h": "MarioNawfal", "cat": "News", "f": 3309439, "total": 7305041552, "avgW": 521788682, "cr": 53, "w": [221157739, 241470198, 281367752, 306336132, 311490492, 428093132, 474029183, 936917262, 867483693, 722279133, 719441473, 576385620, 697636328, 378693965]}, {"h": "narendramodi", "cat": "Politics", "f": 106597515, "total": 7235513795, "avgW": 516822413, "cr": 112, "w": [223012306, 295475546, 403282481, 423665154, 373937828, 480987846, 584323584, 914248611, 913639949, 648775256, 535687177, 523664457, 513039312, 311352913]}, {"h": "FabrizioRomano", "cat": "Sports", "f": 27163872, "total": 5863084542, "avgW": 418791753, "cr": 115, "w": [480725640, 555768124, 495597690, 673768826, 415471616, 212993750, 335085787, 311357625, 355746902, 339221260, 490964208, 350473952, 400304153, 197996838]}, {"h": "centralreality", "cat": "Geopolitics", "f": 1310129, "total": 5689729561, "avgW": 406409254, "cr": 86, "w": [5453420, 8421950, 13195023, 55222622, 238144870, 722760103, 561670514, 824939270, 775247684, 629418225, 494510736, 611356877, 478050265, 264748446]}, {"h": "DiscussingFilm", "cat": "Entertainment", "f": 2813060, "total": 5264229313, "avgW": 376016379, "cr": 219, "w": [387622221, 385316281, 258392168, 276825072, 317553945, 298783944, 396161403, 349082237, 320927557, 256223023, 804919270, 474126966, 395068807, 200073687]}, {"h": "TheCinesthetic", "cat": "Entertainment", "f": 1601422, "total": 5115323644, "avgW": 365380260, "cr": 318, "w": [520558627, 566189205, 399607800, 218819583, 245890047, 287898328, 374365599, 262513453, 418405792, 370322522, 367533023, 314041540, 275284923, 155119722]}, {"h": "Rainmaker1973", "cat": "Science", "f": 4301503, "total": 3840458108, "avgW": 274318436, "cr": 736, "w": [259977890, 285417404, 259303633, 255210254, 246027257, 305252941, 294762444, 289804701, 354110629, 287309162, 374109958, 219920007, 102618387, 157464378]}, {"h": "PopCrave", "cat": "Entertainment", "f": 2964982, "total": 3519623483, "avgW": 251401677, "cr": 121, "w": [257232591, 247615478, 406095811, 275109933, 279465122, 171011464, 144112401, 206299645, 308317367, 285654506, 290361395, 231840404, 129051550, 187167421]}, {"h": "EricLDaugh", "cat": "Politics", "f": 1026345, "total": 3494013045, "avgW": 249572360, "cr": 205, "w": [371235627, 314938372, 287221266, 227891907, 174624087, 166744984, 179155765, 248297371, 271428233, 203364128, 238067121, 228553348, 191078750, 163323979]}, {"h": "Variety", "cat": "Entertainment", "f": 3170557, "total": 3427170175, "avgW": 244797869, "cr": 515, "w": [244734694, 250155185, 229932038, 219829974, 264650331, 263786495, 217147615, 221161694, 179345422, 180797483, 387092968, 243045459, 205033160, 192407585]}, {"h": "sciencegirl", "cat": "Science", "f": 5763468, "total": 3269695848, "avgW": 233549703, "cr": 453, "w": [188198699, 202082259, 160986803, 214448738, 218517224, 185656921, 181186452, 150410590, 158380976, 906875849, 197366939, 161615340, 168058419, 81225609]}, {"h": "nypost", "cat": "News", "f": 3730158, "total": 3243304469, "avgW": 231664604, "cr": 89, "w": [132701286, 145698937, 141282136, 237867808, 286031751, 321361503, 274792772, 217822599, 222742122, 213006714, 294815271, 273644024, 221405193, 151121698]}, {"h": "Polymarket", "cat": "Brand", "f": 1356999, "total": 3236814331, "avgW": 231201023, "cr": 68, "w": [183227441, 178296829, 104271022, 57962172, 127499715, 110742674, 140408649, 285283533, 414786307, 393034698, 366478180, 108269983, 383425236, 316024259]}, {"h": "TouchlineX", "cat": "Sports", "f": 1571456, "total": 3045178374, "avgW": 217512741, "cr": 349, "w": [197323969, 272476910, 264616125, 203444822, 222878157, 191999496, 209724779, 208315519, 215271644, 220691211, 220619018, 197115825, 173937036, 115543239]}, {"h": "Starlink", "cat": "Tech", "f": 1580011, "total": 3014199647, "avgW": 215299974, "cr": 501, "w": [201164206, 259165765, 302940915, 192092175, 183625454, 255030144, 278519630, 273211520, 293553775, 199846076, 166855028, 35244293, 210075904, 49000092]}, {"h": "WhiteHouse", "cat": "Politics", "f": 4374417, "total": 2673736299, "avgW": 190981164, "cr": 320, "w": [349844897, 174050407, 111803422, 144544515, 90634601, 103984265, 151912863, 187628762, 357505189, 322994317, 115477802, 225780090, 122516180, 128736942]}, {"h": "TMZ", "cat": "Entertainment", "f": 8562139, "total": 2666596216, "avgW": 190471158, "cr": 466, "w": [155135844, 106121077, 117971914, 190767612, 210795143, 169166999, 211730972, 144911917, 264678809, 175920371, 276863728, 267933706, 168946392, 134258172]}, {"h": "bosunatiklama", "cat": "Entertainment", "f": 1321675, "total": 2588170113, "avgW": 184869293, "cr": 284, "w": [22343162, 31614571, 21266786, 43716765, 94196033, 281255296, 288289955, 275228502, 288810851, 286781266, 258419405, 297078083, 261599292, 129080782]}, {"h": "Dexerto", "cat": "Entertainment", "f": 1320680, "total": 2492541147, "avgW": 178038653, "cr": 642, "w": [176884338, 278219489, 166161075, 171098113, 163884480, 243655994, 149543237, 143388278, 188869974, 206267926, 165502652, 161557270, 133250375, 58285709]}, {"h": "BRICSinfo", "cat": "Geopolitics", "f": 2026694, "total": 2400966435, "avgW": 171497602, "cr": 159, "w": [128895913, 88520251, 82747021, 96881421, 71533871, 97973855, 104685576, 288424460, 313179121, 257715520, 204162036, 204507355, 177936090, 170795753]}, {"h": "FilmUpdates", "cat": "Entertainment", "f": 1359560, "total": 2378987761, "avgW": 169927697, "cr": 529, "w": [269301088, 182442744, 145860698, 126240507, 106465017, 77885478, 134256170, 142529272, 184990718, 157958675, 383241183, 115974886, 187246590, 92254499]}, {"h": "Cristiano", "cat": "Sports", "f": 106611639, "total": 2355369336, "avgW": 168240666, "cr": 287, "w": [56863234, 73641045, 48028504, 110217089, 55144326, 157904505, 220264372, 273513229, 501151791, 116023927, 264042387, 207046341, 143261980, 66221400]}, {"h": "FoxNews", "cat": "News", "f": 28713020, "total": 2288259975, "avgW": 163447141, "cr": 590, "w": [166074393, 215308168, 179555788, 122210259, 134228463, 122724845, 151483068, 247381047, 221873924, 153419163, 143857145, 118137002, 113795390, 91172928]}, {"h": "atrupar", "cat": "Politics", "f": 1083529, "total": 2212176346, "avgW": 158012596, "cr": 416, "w": [215630567, 164059556, 230809206, 136085059, 118389548, 118880363, 116454992, 125245151, 210545305, 150909139, 197509715, 134934354, 87718866, 111001937]}, {"h": "ActuFoot_", "cat": "Sports", "f": 8864037, "total": 2001703107, "avgW": 142978793, "cr": 298, "w": [16994983, 33711213, 33811259, 27753068, 60989321, 202670744, 188192049, 222587551, 209608088, 209607128, 248673105, 229660500, 203174636, 106439611]}, {"h": "tkzwgrs", "cat": "Entertainment", "f": 3005792, "total": 1979984365, "avgW": 141427454, "cr": 669, "w": [39574104, 20015384, 61192886, 8928603, 16837744, 135287928, 119793959, 69319113, 165808971, 436055001, 175289892, 312780454, 297157029, 70897479]}, {"h": "bpthaber", "cat": "News", "f": 1629177, "total": 1964093515, "avgW": 140292393, "cr": 423, "w": [17615631, 14913689, 18733328, 25664749, 108926046, 222953345, 188899467, 254181209, 247882967, 214337746, 177089767, 181357428, 193180671, 91442117]}, {"h": "zerohedge", "cat": "Finance", "f": 2634167, "total": 1857408573, "avgW": 132672040, "cr": 653, "w": [68421351, 83865771, 98529940, 113280142, 105284117, 184068325, 134974446, 148307633, 226860584, 186576288, 120858443, 149633188, 117165928, 93722663]}, {"h": "XFreeze", "cat": "Geopolitics", "f": 184184, "total": 1809876842, "avgW": 129276917, "cr": 97, "w": [161299104, 94003492, 129192521, 86227711, 66848884, 64739287, 147427028, 129765579, 93829251, 71240318, 135041763, 155782611, 150903404, 228802163]}, {"h": "Acyn", "cat": "News", "f": 734102, "total": 1755230765, "avgW": 125373626, "cr": 552, "w": [185132044, 96471869, 157950216, 125604878, 136969533, 95396679, 77882002, 121324135, 184330092, 90419153, 146679134, 117085760, 91111558, 69568503]}, {"h": "jacksonhinklle", "cat": "Politics", "f": 3809896, "total": 1755043440, "avgW": 125360245, "cr": 285, "w": [49687074, 43385524, 36450759, 73738893, 61623638, 48348630, 53292531, 223426858, 259794130, 210789882, 240289190, 156376122, 129720898, 124205321]}, {"h": "porqueTTarg", "cat": "Entertainment", "f": 730661, "total": 1716904312, "avgW": 122636022, "cr": 459, "w": [34604661, 41574915, 18796580, 17872969, 107356230, 203196799, 146912131, 207266015, 224281228, 184155696, 152264110, 131775236, 153205782, 70748357]}, {"h": "clashreport", "cat": "News", "f": 833288, "total": 1664049261, "avgW": 118860661, "cr": 462, "w": [101714283, 90658273, 122440582, 44583504, 58352393, 78428768, 93786953, 180198014, 251677540, 156570813, 139106449, 105093335, 98186132, 82868162]}, {"h": "dom_lucre", "cat": "Politics", "f": 1698199, "total": 1592504319, "avgW": 113750308, "cr": 372, "w": [47493642, 66937170, 57931746, 50580351, 29368827, 45504044, 86064885, 113800768, 155711990, 207440533, 201583511, 220160200, 191731638, 94986613]}, {"h": "nicksortor", "cat": "News", "f": 1506652, "total": 1575885187, "avgW": 112563227, "cr": 665, "w": [210208017, 110092078, 99080992, 92770385, 73225276, 77411875, 88254540, 165654582, 157734858, 148082476, 105200329, 35562732, 81768307, 69642078]}, {"h": "CollinRugg", "cat": "Politics", "f": 2369605, "total": 1568618332, "avgW": 112044166, "cr": 430, "w": [127037646, 95439128, 81701176, 91987838, 84227974, 93333342, 124281016, 70242518, 128346348, 140989547, 157363314, 126780188, 95308138, 71183952]}, {"h": "DailyLoud", "cat": "Entertainment", "f": 3983844, "total": 1474257157, "avgW": 105304082, "cr": 640, "w": [80404009, 74563528, 67245975, 36063150, 93889215, 78932316, 157564001, 125128169, 142835769, 131550311, 64062452, 144384277, 144554171, 91421461]}, {"h": "KobeissiLetter", "cat": "Finance", "f": 1664960, "total": 1442680832, "avgW": 103048630, "cr": 247, "w": [76584345, 87558536, 112142200, 90033777, 59950368, 56513732, 72849122, 103243711, 122440674, 134651876, 85631273, 152616840, 134928338, 101238276]}, {"h": "ReddCinema", "cat": "Entertainment", "f": 207461, "total": 1346948824, "avgW": 96210630, "cr": 443, "w": [60476782, 60431260, 116581265, 118551504, 58486189, 57813741, 75131188, 91237710, 101560227, 166956410, 106036993, 112782480, 103586328, 109438150]}, {"h": "bayrakmedya", "cat": "Entertainment", "f": 128074, "total": 1290128699, "avgW": 92152049, "cr": 240, "w": [2023186, 9275616, 10299695, 11725294, 30199936, 128675789, 77981430, 147700547, 173930870, 200711007, 138004755, 136379296, 129808581, 91724897]}, {"h": "EndWokeness", "cat": "Politics", "f": 3912144, "total": 1287462299, "avgW": 91961592, "cr": 398, "w": [89377581, 93068114, 103979960, 93117388, 83267455, 85196001, 84993801, 131971861, 67202464, 121405528, 109410522, 66362954, 51412631, 52904293]}, {"h": "spectatorindex", "cat": "News", "f": 3256705, "total": 1286537188, "avgW": 91895513, "cr": 289, "w": [102288672, 48030793, 17571969, 8853943, 26468790, 28701069, 38073499, 217934236, 208412348, 135099969, 121350360, 77854074, 67826565, 122996620]}, {"h": "beyoncegarden", "cat": "Entertainment", "f": 317611, "total": 1239674094, "avgW": 88548149, "cr": 651, "w": [66796943, 91652689, 107911116, 70110119, 60861241, 122781311, 75533176, 73561122, 88342572, 83308507, 133259386, 83161361, 91294011, 37419546]}, {"h": "lemarcaspors_", "cat": "Sports", "f": 151240, "total": 1179486979, "avgW": 84249069, "cr": 553, "w": [10383093, 9033724, 13293878, 17142023, 56411467, 111900057, 149562245, 148693063, 139203186, 165158850, 127846293, 75161178, 116665482, 37649476]}, {"h": "MLB", "cat": "Sports", "f": 12926089, "total": 1084345247, "avgW": 77453231, "cr": 724, "w": [29588783, 44986387, 50548178, 39805479, 35915573, 48194398, 57690499, 36786241, 111340918, 97115967, 62631875, 173972057, 183297379, 82292829]}, {"h": "MEXC", "cat": "Brand", "f": 1637970, "total": 1083013977, "avgW": 77358141, "cr": 144, "w": [64159330, 153484578, 94634504, 63141898, 120799828, 95157283, 82619677, 74563093, 73700231, 43791329, 37764404, 2913822, 43531855, 110651328]}, {"h": "updatecharts", "cat": "Finance", "f": 569144, "total": 1079413534, "avgW": 77100966, "cr": 680, "w": [17558345, 12383099, 22685891, 10584860, 64471094, 160762950, 111409736, 132150325, 128571519, 148409037, 85084552, 51453480, 65138025, 63740789]}, {"h": "DEATHDOL_NOTE", "cat": "Entertainment", "f": 1134801, "total": 1074574142, "avgW": 76755295, "cr": 230, "w": [1200030, 6341647, 2150880, 17158220, 66913849, 105893105, 115202468, 52621866, 49993713, 130387708, 89607457, 184273812, 137636495, 107938926]}, {"h": "choquei", "cat": "Entertainment", "f": 9423593, "total": 988004947, "avgW": 70571781, "cr": 740, "w": [10466310, 10147794, 6143305, 12029544, 39368034, 128152194, 101559515, 110107552, 159608496, 89472865, 57611013, 80314920, 92986809, 77559706]}, {"h": "gotrice2024", "cat": "Entertainment", "f": 154315, "total": 955881365, "avgW": 68277240, "cr": 584, "w": [86878574, 94253597, 86393783, 77951757, 51724855, 41627133, 71443197, 47058581, 63016093, 37924193, 88703580, 74424314, 62098262, 43695444]}, {"h": "CerfiaFR", "cat": "News", "f": 1285096, "total": 903921532, "avgW": 64565823, "cr": 582, "w": [29495780, 21908919, 9206234, 10550361, 39613234, 100448708, 78721368, 91055863, 104819768, 93568839, 99742827, 82536825, 68160176, 55605933]}, {"h": "NASA", "cat": "Science", "f": 90903895, "total": 837416557, "avgW": 59815468, "cr": 61, "w": [17613603, 47745762, 21706174, 17308181, 21531426, 26936335, 28204565, 14984959, 14469609, 9056893, 16585772, 22954197, 294355924, 276287815]}, {"h": "FurkanGozukara", "cat": "Tech", "f": 239525, "total": 831750106, "avgW": 59410721, "cr": 706, "w": [21975276, 29444269, 10888036, 9603521, 17654667, 12753094, 15221920, 49280281, 71734067, 72029663, 138650436, 160789868, 121027948, 84325420]}, {"h": "bitget", "cat": "Brand", "f": 4446644, "total": 773067448, "avgW": 55219103, "cr": 267, "w": [174123044, 64194444, 50173501, 61305241, 82770306, 85209320, 40622204, 13008342, 7098167, 14508131, 8001892, 31697658, 72640604, 59874862]}, {"h": "AMAZlNGNATURE", "cat": "Science", "f": 6383813, "total": 748816240, "avgW": 53486874, "cr": 496, "w": [58372272, 81588008, 61975164, 59454987, 53512194, 46604393, 55432798, 51244678, 27471139, 56438862, 22520187, 30686259, 30022801, 84586298]}, {"h": "TRIGGERHAPPYV1", "cat": "Geopolitics", "f": 1275855, "total": 552175373, "avgW": 39441098, "cr": 418, "w": [14235862, 18036127, 7141185, 6618106, 6611298, 10805530, 10855402, 37065109, 44861834, 54241653, 23282846, 104925444, 115958213, 84097934]}, {"h": "GBX_Press", "cat": "Brand", "f": 114207, "total": 532087149, "avgW": 88681191, "cr": 147, "w": [0, 0, 0, 0, 0, 0, 0, 0, 2967646, 35881300, 36150511, 44459301, 217889727, 194738664]}, {"h": "mehdirhasan", "cat": "News", "f": 2033254, "total": 519570928, "avgW": 37112209, "cr": 583, "w": [23183405, 16204201, 16583588, 23957423, 18511247, 26787858, 38613264, 76372160, 69693095, 37880860, 28890318, 38439554, 41312112, 52757243]}, {"h": "AJENews", "cat": "News", "f": 2529870, "total": 503205866, "avgW": 35943276, "cr": 704, "w": [5742715, 4724973, 1497766, 2794588, 2510688, 1623975, 1738126, 17244539, 85303580, 84874888, 94140050, 76443778, 66341178, 55104140]}, {"h": "TukiFromKL", "cat": "Entertainment", "f": 116245, "total": 457334499, "avgW": 32666749, "cr": 404, "w": [48262, 21150, 1462011, 1646579, 413686, 704656, 3529815, 3815765, 44259427, 62403497, 69402852, 98316570, 92617685, 78658143]}, {"h": "pmarca", "cat": "Finance", "f": 2468967, "total": 441428320, "avgW": 31530594, "cr": 136, "w": [1470147, 1433324, 1917462, 1024307, 1424795, 5516883, 33079027, 13013264, 12269980, 119859260, 80879252, 9296576, 16223976, 143923415]}, {"h": "Xiaomi", "cat": "Brand", "f": 4337577, "total": 435138256, "avgW": 31081304, "cr": 255, "w": [11167845, 17194283, 37292115, 17536014, 14362072, 6168428, 2710903, 31681066, 42097270, 9646428, 21244661, 70933831, 82740926, 69723669]}, {"h": "Fincantieri", "cat": "Brand", "f": 39832, "total": 404332792, "avgW": 28880913, "cr": 386, "w": [23721406, 18610540, 7999353, 27048963, 19712159, 16444925, 20971221, 11029024, 14088253, 12036800, 26993838, 17084615, 91350528, 90427828]}, {"h": "rogueducknet", "cat": "Entertainment", "f": 17392, "total": 371084422, "avgW": 26506030, "cr": 571, "w": [10535548, 10551160, 4319910, 25270365, 24689468, 22567159, 28012164, 36693289, 18378338, 24232817, 44714985, 92629119, 24025645, 0]}, {"h": "TheLaikYobaz", "cat": "Geopolitics", "f": 244867, "total": 366043452, "avgW": 26145960, "cr": 698, "w": [236004, 396938, 220698, 68957, 3858541, 11770091, 15962485, 35810117, 50248285, 48537369, 47235651, 44204778, 59555590, 47937948]}, {"h": "21metgala", "cat": "Geopolitics", "f": 205131, "total": 329008139, "avgW": 54834689, "cr": 272, "w": [0, 0, 0, 0, 0, 0, 0, 0, 12685129, 30989115, 73834505, 45675521, 14199215, 151624654]}, {"h": "A_K_Mandhan", "cat": "Politics", "f": 69216, "total": 328657938, "avgW": 23475567, "cr": 338, "w": [1948654, 5812762, 4897741, 24254709, 34800557, 12986783, 5107621, 36504971, 32601825, 24629357, 11189772, 12277435, 47119228, 73774337]}, {"h": "AjMachalaa", "cat": "Entertainment", "f": 45750, "total": 302652633, "avgW": 21618045, "cr": 509, "w": [8864959, 16534004, 10059248, 25366890, 33723994, 29836629, 23644773, 18872696, 16205788, 10083277, 10799840, 24196996, 11039455, 52451148]}, {"h": "BrandonStraka", "cat": "Politics", "f": 1052610, "total": 273543925, "avgW": 19538851, "cr": 236, "w": [3727695, 2189948, 8334578, 19827353, 20766992, 19505705, 32914326, 29301570, 22291590, 23266415, 21857168, 29665069, 27147818, 11241265]}, {"h": "muellerberndt", "cat": "Geopolitics", "f": 21297, "total": 255243341, "avgW": 18231667, "cr": 145, "w": [1288, 9290, 1618321, 3487364, 12730062, 6303893, 6271627, 23371486, 9229864, 3693087, 953, 730, 94498159, 94017944]}, {"h": "CentroLeaks", "cat": "News", "f": 629963, "total": 236529287, "avgW": 16894949, "cr": 293, "w": [1481665, 2319992, 4682604, 6602257, 6241224, 13765913, 10100858, 40189661, 32251735, 22126630, 13096245, 19330245, 9127600, 53469218]}, {"h": "grok", "cat": "Tech", "f": 8537597, "total": 222123508, "avgW": 15865964, "cr": 279, "w": [6600957, 2967466, 10935497, 12193595, 40649973, 42464428, 4840476, 2669513, 2116286, 716682, 81650260, 3875681, 2513562, 35587]}, {"h": "suntory", "cat": "Brand", "f": 2639209, "total": 218158149, "avgW": 15582724, "cr": 171, "w": [4044851, 1028060, 130533, 530415, 21530612, 18671769, 2191462, 13636416, 7648935, 7531042, 955941, 13814289, 95692589, 30750902]}, {"h": "AnthropicAI", "cat": "Tech", "f": 1129390, "total": 216039693, "avgW": 15431406, "cr": 417, "w": [670295, 2236476, 5322878, 5632180, 9357360, 23033471, 12646510, 57104673, 11470590, 5417090, 3852990, 5260433, 7993245, 65956394]}, {"h": "CMShehbaz", "cat": "Politics", "f": 6683099, "total": 149688776, "avgW": 10692055, "cr": 245, "w": [37856, 831241, 904458, 3149550, 751517, 2294460, 4415981, 12896526, 17246920, 20786441, 1316215, 8950512, 884470, 75035842]}, {"h": "Tesla_AI", "cat": "Tech", "f": 455238, "total": 136686817, "avgW": 9763344, "cr": 199, "w": [221433, 83506, 42146, 476292, 140053, 25874344, 40015739, 100746, 216705, 34037, 22309, 151589, 518961, 68745164]}, {"h": "IRanMediaco", "cat": "Geopolitics", "f": 130975, "total": 126494750, "avgW": 31623687, "cr": 562, "w": [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 619301, 36585596, 29679949, 59609904]}, {"h": "capcutapp", "cat": "Brand", "f": 38528, "total": 116357163, "avgW": 8311225, "cr": 315, "w": [70733, 5502, 48247, 57525, 525992, 946870, 29128, 56675, 2956209, 2050916, 7822, 3708643, 15633660, 90248719]}, {"h": "BloFin_Official", "cat": "Brand", "f": 114415, "total": 114381064, "avgW": 8170076, "cr": 667, "w": [4425559, 2485672, 4371237, 3340824, 3087000, 3293588, 2849604, 2773423, 3138036, 5892305, 2687677, 4262146, 26541057, 43841921]}, {"h": "AWSstartups", "cat": "Tech", "f": 264763, "total": 106344254, "avgW": 7596018, "cr": 620, "w": [9464, 5801, 12608, 28235, 3267463, 540547, 7973300, 2212911, 4855659, 3356221, 890936, 5925557, 39795484, 37464870]}, {"h": "REBHPortal", "cat": "Entertainment", "f": 402799, "total": 99576096, "avgW": 7112578, "cr": 405, "w": [153162, 583718, 923210, 515267, 1924435, 1445007, 24053419, 6588281, 5096074, 1696447, 10841570, 9092566, 8895271, 27496058]}, {"h": "wizkidayo", "cat": "Entertainment", "f": 14195654, "total": 95518090, "avgW": 6822720, "cr": 218, "w": [5093143, 10468495, 32153397, 1943212, 511643, 4690218, 11032621, 10572919, 7136017, 2224938, 7801567, 238330, 86705, 0]}, {"h": "ICannot_Enough", "cat": "Entertainment", "f": 285677, "total": 89693368, "avgW": 6406669, "cr": 438, "w": [209527, 598934, 462082, 362010, 75930, 211228, 619570, 190758, 139039, 293014, 438743, 7426876, 37183388, 41421365]}, {"h": "lynk0x", "cat": "Entertainment", "f": 299863, "total": 84260326, "avgW": 6018594, "cr": 689, "w": [10623601, 4966990, 3672357, 3770150, 3663883, 3872690, 3418043, 3993797, 6285959, 1261845, 1431677, 1521787, 3070223, 26301531]}, {"h": "POCOGlobal", "cat": "Brand", "f": 1017109, "total": 80893365, "avgW": 5778097, "cr": 641, "w": [18336428, 10471835, 261662, 58107, 45839, 14072, 18673, 31172, 1470663, 16845263, 28285057, 4886328, 3517, 0]}, {"h": "CokeON", "cat": "Brand", "f": 587366, "total": 79327789, "avgW": 7932778, "cr": 429, "w": [0, 0, 0, 0, 64321, 76779, 39468, 502967, 34559058, 6264564, 174326, 75566, 112713, 37458027]}, {"h": "HMGnewsroom", "cat": "Politics", "f": 566927, "total": 71204899, "avgW": 5086064, "cr": 380, "w": [4002574, 1262637, 536361, 661216, 1291501, 1124188, 3898, 449015, 965173, 239539, 3562639, 7906474, 3139117, 45840687]}, {"h": "BosonProtocol", "cat": "Brand", "f": 77272, "total": 67615337, "avgW": 4829666, "cr": 190, "w": [21245, 4037, 10288, 9344, 4280, 2825, 15600928, 51817319, 10700, 38042, 44500, 14138, 18971, 7896]}, {"h": "valormental", "cat": "Entertainment", "f": 181888, "total": 59611131, "avgW": 5961113, "cr": 297, "w": [0, 0, 0, 0, 129041, 1525521, 11630389, 8647817, 12145340, 11464358, 10705927, 2873112, 489626, 0]}, {"h": "ChinaRailways", "cat": "Brand", "f": 62783, "total": 55479472, "avgW": 3962819, "cr": 292, "w": [3051, 2636, 1751, 3120, 50188, 2988, 1765, 4200, 164084, 1068084, 4745845, 58271, 2257, 49370475]}, {"h": "ellad3vi", "cat": "Entertainment", "f": 20013, "total": 52495991, "avgW": 3749713, "cr": 519, "w": [3075436, 836299, 576483, 533810, 58349, 2408036, 1279022, 2759263, 1746026, 1263481, 703657, 10963819, 1543133, 21630357]}, {"h": "SRMDharampur", "cat": "Politics", "f": 51709, "total": 44119921, "avgW": 3151422, "cr": 609, "w": [4245926, 4309124, 5425159, 5975474, 5818881, 8683845, 5351012, 2856450, 117159, 9646, 13176, 58614, 617, 0]}, {"h": "MeinGottNiles", "cat": "Entertainment", "f": 64087, "total": 37989292, "avgW": 2713520, "cr": 563, "w": [4369771, 4375119, 1607830, 2095377, 4150922, 2422002, 792610, 766141, 1045913, 791266, 8725757, 908408, 127789, 0]}, {"h": "SportsonPrime", "cat": "Sports", "f": 17224, "total": 36119339, "avgW": 2579952, "cr": 634, "w": [13683, 186526, 82765, 16411, 86975, 139654, 205905, 111676, 361593, 431807, 157574, 1841629, 440917, 32037732]}, {"h": "jackguestfilm", "cat": "Entertainment", "f": 4805, "total": 34537137, "avgW": 2466938, "cr": 301, "w": [1222340, 1005518, 2567482, 57908, 16852, 510, 36904, 76400, 125103, 233331, 2186139, 512227, 25717021, 40064]}, {"h": "Jxxyy", "cat": "Entertainment", "f": 38714, "total": 17696042, "avgW": 1264003, "cr": 596, "w": [75349, 6675, 10581, 1328, 12247, 57124, 2389, 476, 324778, 2955, 41955, 4946, 18630, 17096391]}, {"h": "towanokanae1984", "cat": "Entertainment", "f": 100472, "total": 8575702, "avgW": 612550, "cr": 557, "w": [33614, 1255, 62018, 744, 38671, 65844, 265439, 254419, 110720, 78761, 2863255, 265332, 350524, 4167060]}, {"h": "viennoiscafe", "cat": "Entertainment", "f": 5366, "total": 1225695, "avgW": 87549, "cr": 378, "w": [55112, 3840, 1236, 7177, 101220, 179818, 98674, 84951, 126570, 172507, 196073, 178521, 13098, 0]}];
+
+function fmt(n){if(n>=1e12)return(n/1e12).toFixed(1)+'T';if(n>=1e9)return(n/1e9).toFixed(1)+'B';if(n>=1e6)return(n/1e6).toFixed(1)+'M';if(n>=1e3)return(n/1e3).toFixed(1)+'K';return n.toString();}
+function fmtF(n){return n.toLocaleString();}
+
+// Table
+const tbody=document.getElementById('rankBody');
+C.forEach((c,i)=>{
+    const tr=document.createElement('tr');
+    tr.innerHTML=`<td class="rank">${i+1}</td><td class="creator-name"><a href="https://x.com/${c.h}" target="_blank" style="color:${CC[c.cat]}">@${c.h}</a></td><td><span class="badge ${CS[c.cat]}">${c.cat}</span></td><td data-val="${c.f}">${fmtF(c.f)}</td><td data-val="${c.total}">${fmt(c.total)}</td><td data-val="${c.cr}">${c.cr}</td>`;
+    tbody.appendChild(tr);
+});
+
+let sC=-1,sA=true;
+function sortTable(col,type){
+    const rows=Array.from(tbody.querySelectorAll('tr'));
+    if(sC===col)sA=!sA;else{sC=col;sA=type==='num'?false:true;}
+    rows.sort((a,b)=>{let av,bv;if(type==='num'){const ac=a.cells[col],bc=b.cells[col];av=parseFloat(ac.dataset.val||ac.textContent.replace(/[^0-9.-]/g,''));bv=parseFloat(bc.dataset.val||bc.textContent.replace(/[^0-9.-]/g,''));}else{av=a.cells[col].textContent.toLowerCase();bv=b.cells[col].textContent.toLowerCase();}if(av<bv)return sA?-1:1;if(av>bv)return sA?1:-1;return 0;});
+    rows.forEach(r=>tbody.appendChild(r));
+}
+
+// Main chart - top 10 weekly
+const LC=['#00d4ff','#ff6b6b','#6bcb77','#ffd93d','#c084fc','#fb923c','#f472b6','#22d3ee','#a3e635','#818cf8'];
+const top10=C.slice(0,10);
+const ds=[];
+top10.forEach((c,i)=>{
+    ds.push({
+        label:'@'+c.h,
+        data:WL.map((w,wi)=>({x:w,y:c.w[wi]||0})),
+        borderColor:LC[i],backgroundColor:LC[i]+'20',borderWidth:2,pointRadius:2,tension:0.3,fill:false
+    });
+});
+
+new Chart(document.getElementById('mainChart'),{type:'line',data:{datasets:ds},options:{responsive:true,maintainAspectRatio:false,interaction:{mode:'index',intersect:false},scales:{x:{type:'time',time:{unit:'week',displayFormats:{week:'MMM d'}},grid:{color:'#1a1a1a'},ticks:{color:'#888'}},y:{grid:{color:'#1a1a1a'},ticks:{color:'#888',callback:v=>fmt(v)}}},plugins:{legend:{labels:{color:'#ccc',usePointStyle:true,pointStyle:'circle'}},tooltip:{callbacks:{label:ctx=>ctx.dataset.label+': '+fmt(ctx.parsed.y)}}}}});
+
+// Heatmap with REAL weekly data
+const allWV=[];
+C.slice(0,25).forEach(c=>c.w.forEach(v=>allWV.push(v)));
+const hM=Math.max(...allWV);
+function hC(v){const p=v/hM;if(p<0.02)return'heat-0';if(p<0.08)return'heat-1';if(p<0.2)return'heat-2';if(p<0.5)return'heat-3';return'heat-4';}
+const hT=document.getElementById('heatmapTable');
+let hH='<thead><tr><th>Creator</th>';
+WN.forEach(w=>hH+=`<th>${w}</th>`);
+hH+='</tr></thead><tbody>';
+C.slice(0,25).forEach(c=>{
+    hH+=`<tr><td style="color:${CC[c.cat]};font-weight:600;white-space:nowrap">@${c.h}</td>`;
+    c.w.forEach(v=>{hH+=`<td class="${hC(v)}">${fmt(v)}</td>`;});
+    hH+='</tr>';
+});
+hH+='</tbody>';
+hT.innerHTML=hH;
+
+// Spark cards with REAL weekly data
+const sG=document.getElementById('sparkGrid');
+C.forEach((c,i)=>{
+    const card=document.createElement('div');
+    card.className='spark-card';
+    const peak=Math.max(...c.w);
+    card.innerHTML=`<div class="spark-header"><span class="spark-name"><a href="https://x.com/${c.h}" target="_blank" style="color:${CC[c.cat]}">@${c.h}</a></span><span class="spark-total">${fmt(c.total)}</span></div><div class="spark-stats"><span><span class="label">Followers</span><span class="value">${fmt(c.f)}</span></span><span><span class="label">This Week</span><span class="value">${fmt(c.w[c.w.length-1])}</span></span><span><span class="label">Peak Week</span><span class="value">${fmt(peak)}</span></span><span><span class="label">CreatorRank</span><span class="value">#${c.cr}</span></span></div><div class="chart-container-sm"><canvas id="spark_${i}"></canvas></div>`;
+    sG.appendChild(card);
+    const sd=WL.map((w,wi)=>({x:w,y:c.w[wi]||0}));
+    const col=CC[c.cat];
+    new Chart(document.getElementById(`spark_${i}`),{type:'line',data:{datasets:[{data:sd,borderColor:col,backgroundColor:col+'15',borderWidth:1.5,pointRadius:0,tension:0.4,fill:true}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false},tooltip:{callbacks:{label:ctx=>fmt(ctx.parsed.y)}}},scales:{x:{type:'time',display:false},y:{display:false}}}});
+});
+</script>
+</body>
+</html>
